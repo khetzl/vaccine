@@ -1,0 +1,6 @@
+#!/bin/sh
+# -*- tab-width:4;indent-tabs-mode:nil -*-
+# ex: ts=4 sw=4 et
+COOKIE=edunesia
+
+erl -pa ebin/ -name vaccine@127.0.0.1 -setcookie $COOKIE -noshell -run vaccine run $*

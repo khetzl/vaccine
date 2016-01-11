@@ -1,0 +1,12 @@
+{application, vaccine,
+ [
+  {description, "Code injection tool framework for remote commands"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, {vaccine, []}},
+  {env, []}
+ ]}.
