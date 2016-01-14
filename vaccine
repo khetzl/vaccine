@@ -3,4 +3,4 @@
 # ex: ts=4 sw=4 et
 COOKIE=edunesia
 
-erl -pa ebin/ -name vaccine@127.0.0.1 -setcookie $COOKIE -noshell -run vaccine run $*
+erl -pa ebin/ -name vaccine@127.0.0.1 -config vaccine.config -setcookie $COOKIE -noshell -run vaccine run $*

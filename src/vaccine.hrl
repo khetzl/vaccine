@@ -15,6 +15,8 @@
 -type error_response() :: #error_response{}.
 
 %% Macros
+-define(DEFAULT_RPC_TIMEOUT, 5000).
+
 -define(ERROR_HALT(Format, Args), vaccine_lib:error_halt(Format, Args)).
 -define(ERROR_HALT(Msg), vaccine_lib:error_halt(Msg, [])).
 
