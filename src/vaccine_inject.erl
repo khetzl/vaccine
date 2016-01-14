@@ -14,20 +14,19 @@
 -export([inject_all/3,
          purge_all/3]).
 
+%%% API
+%% @doc Injects the command module and its dependencies to the remote node.
 inject_all(Node, Mod, Timeout) ->
     lists:foreach(fun(M) ->
                           inject_module(Node, M, Timeout)
                   end, [Mod | ?PLUGIN_MODULES]).
 
+%% @doc Deletes and purges the command module and its dependencies
+%% to the remote node.
 purge_all(Node, Mod, Timeout) ->
     lists:foreach(fun(M) ->
                           purge_module(Node, M, Timeout)
                   end, [Mod | ?PLUGIN_MODULES]).
-    
-    
-
-%%% API
-%% @doc
 
 %%% Internal functions
 inject_module(Node, Mod, Timeout) ->
