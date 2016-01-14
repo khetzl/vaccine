@@ -33,8 +33,8 @@ inject_module(Node, Mod, Timeout) ->
     case rpc:call(Node, code, which, [Mod], Timeout) of
         non_existing ->
             compile_n_load(Node, Mod, Timeout);
-        _  ->
-            ok
+        _ ->
+            error(already_loaded)
     end.
 
 compile_n_load(Node, Mod, Timeout) ->
