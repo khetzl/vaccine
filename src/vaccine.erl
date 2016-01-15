@@ -40,14 +40,15 @@ inject_n_run_cmd(Node, Mod, Args) ->
     try vaccine_inject:inject_all(Node, Mod, Timeout) of
         ok ->
             case rpc:call(Node, Mod, cmd, [Args], Timeout) of
-                #ok_response{msg = undefined} ->
+                #response{msg = undefined} ->
                     io:format("OK~n", []);
-                #ok_response{msg = Msg} ->
+                #response{type = ?T_OK_RESPONSE, msg = Msg} ->
                     io:format("~s~n", [Msg]);
-                #error_response{msg = ErrorMsg} ->
+                #response{type = ?T_ERROR_RESPONSE, msg = ErrorMsg} ->
                     io:format("ERROR: ~s~n", [ErrorMsg]);
                 {badrpc, Reason} ->
-                    ?ERROR_HALT("RPC call returned with error: ~p", [Reason])
+                    ?ERROR_HALT("RPC call returned with error: ~p", [Reason]);
+                _ -> error(unexpected_rpc_response)
             end
     catch
         E:R ->

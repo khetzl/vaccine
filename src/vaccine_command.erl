@@ -9,4 +9,4 @@
 
 -include("vaccine.hrl").
 
--callback cmd(Arguments :: [list(atom())]) -> ok_response() | error_response().
+-callback cmd(Arguments :: [list(atom())]) -> response().
