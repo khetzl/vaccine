@@ -29,15 +29,17 @@ try_cmd(Node, [Cmd | Args]) ->
     try Mod:module_info(exports) of
         ExportList when is_list(ExportList) ->
             proplists:is_defined(cmd, ExportList) orelse error_not_cmd(Mod),
-            inject_n_run_cmd(Node, Mod, Args)
+            AddMods = get_additional_modules(Mod, ExportList),
+            inject_n_run_cmd(Node, Mod, AddMods, Args)
     catch
         error:undef ->
             ?ERROR_HALT("No command module found with name ~p~n", [Mod])
     end.
 
-inject_n_run_cmd(Node, Mod, Args) ->
+inject_n_run_cmd(Node, Mod, AddMods, Args) ->
     Timeout = rpc_timeout(),
-    try vaccine_inject:inject_all(Node, Mod, Timeout) of
+    ModsToInject = [Mod | AddMods],
+    try vaccine_inject:inject_all(Node, ModsToInject, Timeout) of
         ok ->
             case rpc:call(Node, Mod, cmd, [Args], Timeout) of
                 #response{msg = undefined} ->
@@ -54,7 +56,7 @@ inject_n_run_cmd(Node, Mod, Args) ->
         E:R ->
             ?ERROR_HALT("Inject error: ~p:~p~n", [E,R])
     end,
-    vaccine_inject:purge_all(Node, Mod, Timeout).
+    vaccine_inject:purge_all(Node, ModsToInject, Timeout).
 
 error_not_cmd(Cmd) ->
     ?ERROR_HALT("Module (~p) is not a vaccine command module~n", [Cmd]).
@@ -76,3 +78,11 @@ check_connection(ConnectNode, RunNode) ->
 
 rpc_timeout() ->
     application:get_env(vaccine, rpc_timeout, ?DEFAULT_RPC_TIMEOUT).
+
+get_additional_modules(Mod, ExportList) ->
+    case proplists:is_defined(modules, ExportList) of
+        true ->
+            Mod:modules();
+        _ ->
+            []
+    end.

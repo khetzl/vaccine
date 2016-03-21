@@ -16,17 +16,17 @@
 
 %%% API
 %% @doc Injects the command module and its dependencies to the remote node.
-inject_all(Node, Mod, Timeout) ->
+inject_all(Node, Mods, Timeout) ->
     lists:foreach(fun(M) ->
                           inject_module(Node, M, Timeout)
-                  end, [Mod | ?PLUGIN_MODULES]).
+                  end, Mods ++ ?PLUGIN_MODULES).
 
 %% @doc Deletes and purges the command module and its dependencies
 %% to the remote node.
-purge_all(Node, Mod, Timeout) ->
+purge_all(Node, Mods, Timeout) ->
     lists:foreach(fun(M) ->
                           purge_module(Node, M, Timeout)
-                  end, [Mod | ?PLUGIN_MODULES]).
+                  end, Mods ++ ?PLUGIN_MODULES).
 
 %%% Internal functions
 inject_module(Node, Mod, Timeout) ->
@@ -57,4 +57,3 @@ purge_module(Node, Mod, Timeout) ->
             throw({failed_to_delete, Mod})
     end,
     rpc:call(Node, code, purge, [Mod], Timeout).
-            
